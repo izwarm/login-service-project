@@ -5,7 +5,6 @@ import com.learn.test.model.request.SignUpRequestDTO;
 import com.learn.test.model.response.APIResponse;
 import com.learn.test.service.LoginService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ public class LoginWebController {
         APIResponse apiResponse = loginService.signUp(signUpRequestDTO);
 
         return ResponseEntity
-                .status((HttpStatus) apiResponse.getStatus())
+                .status((int) apiResponse.getStatus())
                 .body(apiResponse);
     }
 
@@ -33,7 +32,7 @@ public class LoginWebController {
         APIResponse apiResponse = loginService.login(loginRequestDTO);
 
         return ResponseEntity
-                .status((HttpStatus) apiResponse.getStatus())
+                .status((int) apiResponse.getStatus())
                 .body(apiResponse);
     }
 }

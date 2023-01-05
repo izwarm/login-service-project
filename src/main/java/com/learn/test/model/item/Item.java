@@ -26,7 +26,7 @@ public class Item implements Serializable {
 
     private LocalDate createAt;
 
-    private LocalDate updateAT;
+    private LocalDate updateAt;
 
     private Long createBy;
 

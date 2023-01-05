@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum ResponseStatus {
     // success response
 
+    HTTP_STATUS_OK(200, "Success", HttpStatus.OK, "Success"),
     API_REQUEST_SUCCEEDED(201, "API Request is already succeeded", HttpStatus.OK, "API Request berhasil"),
     API_REQUEST_PARTIALLY_SUCCEEDED(202, "Api Request is partially succeed", HttpStatus.OK, "API Request berhasil sebagian"),
     INVALID_REQUEST(400, "Invalid request", HttpStatus.BAD_REQUEST, "Invalid request!"),

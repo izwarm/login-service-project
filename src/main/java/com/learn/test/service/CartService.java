@@ -1,9 +1,10 @@
 package com.learn.test.service;
 
-import com.learn.test.model.cart.Cart;
 import com.learn.test.model.item.Item;
-import com.learn.test.model.request.ItemRequestDTO;
+import com.learn.test.model.response.APIResponse;
 
 public interface CartService {
-    Cart addItemToCart(Item item, ItemRequestDTO itemRequestDTO);
+    APIResponse addItemToCart(Item item);
+
+    APIResponse checkout(Long userId);
 }

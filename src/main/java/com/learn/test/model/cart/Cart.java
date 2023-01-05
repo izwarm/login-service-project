@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -24,5 +25,13 @@ public class Cart implements Serializable {
     private Integer quantity;
 
     private BigDecimal price;
+
+    private LocalDate createAt;
+
+    private Long createBy;
+
+    private Integer deleted;
+
+    private Boolean isActive;
 
 }

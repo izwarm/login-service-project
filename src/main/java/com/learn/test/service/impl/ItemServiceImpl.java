@@ -3,10 +3,10 @@ package com.learn.test.service.impl;
 import com.learn.test.model.item.Item;
 import com.learn.test.model.request.ItemRequestDTO;
 import com.learn.test.model.response.APIResponse;
+import com.learn.test.model.response.ResponseStatus;
 import com.learn.test.repo.ItemRepository;
 import com.learn.test.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -48,9 +48,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemRequestDTO.getItemName() != null) {
             item.setItemName(itemRequestDTO.getItemName());
         }
-        if (itemRequestDTO.getItemCode() != null) {
-            item.setItemCode(item.getItemCode());
-        }
         if (itemRequestDTO.getQuantity() != 0) {
             item.setQuantity(itemRequestDTO.getQuantity());
         }
@@ -58,13 +55,13 @@ public class ItemServiceImpl implements ItemService {
             item.setPrice(itemRequestDTO.getPrice());
         }
         if (itemRequestDTO.getCreateAt() != null) {
-            item.setUpdateAT(itemRequestDTO.getUpdateAt());
+            item.setUpdateAt(itemRequestDTO.getUpdateAt());
         }
         item = itemRepository.save(item);
 
         APIResponse add = new APIResponse();
 
-        add.setStatus(HttpStatus.OK.value());
+        add.setStatus(ResponseStatus.HTTP_STATUS_OK.getStatusCode());
         add.setResponseData(item);
 
         return add;
@@ -72,14 +69,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public APIResponse deleteItemByItemCode(String itemCode, Long deletedBy) {
-        Item item = new Item();
+        Item item = itemRepository.findByItemCodeAndCreateBy(itemCode,deletedBy);
         item.setDeleted(1);
         item.setDeletedBy(deletedBy);
 
         item = itemRepository.save(item);
 
         APIResponse apiResponse = new APIResponse();
-        apiResponse.setStatus(HttpStatus.OK.value());
+        apiResponse.setStatus(ResponseStatus.HTTP_STATUS_OK.getStatusCode());
         apiResponse.setResponseData(item);
         return apiResponse;
     }
@@ -87,5 +84,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item getItemByItemCode(String itemCode) {
         return itemRepository.findByItemCode(itemCode);
+    }
+
+    @Override
+    public List<Item> findAllItemByUser(Long userId) {
+        return itemRepository.getAllItemByUserId(userId);
     }
 }

@@ -7,10 +7,10 @@ import com.learn.test.model.response.APIResponse;
 import com.learn.test.model.response.ResponseStatus;
 import com.learn.test.model.role.Roles;
 import com.learn.test.model.users.Users;
+import com.learn.test.repo.RoleRepository;
+import com.learn.test.repo.UserRolesRepository;
 import com.learn.test.repo.UsersRepository;
 import com.learn.test.service.LoginService;
-import com.learn.test.service.RoleService;
-import com.learn.test.service.UserRoleService;
 import com.learn.test.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,11 +27,10 @@ public class LoginServiceImpl implements LoginService {
 
     private final UsersRepository usersRepository;
 
-    private final JwtUtils jwtUtils;
+    private final RoleRepository roleRepository;
 
-    private final RoleService roleService;
+    private final UserRolesRepository userRolesRepository;
 
-    private final UserRoleService userRoleService;
 
     @Override
     public APIResponse signUp(SignUpRequestDTO signUpRequestDTO) throws Exception {
@@ -57,9 +56,9 @@ public class LoginServiceImpl implements LoginService {
         }
 
         UserRoles userRoles = new UserRoles();
-        Roles role = null;
+        Roles role = new Roles();
         if (signUpRequestDTO.getRoleCode() != null) {
-            role = roleService.findRoleCode(signUpRequestDTO.getRoleCode());
+            role = roleRepository.findByRoleCode(signUpRequestDTO.getRoleCode());
         }
         if (role == null) {
             apiResponse.setError(new Exception("Role not found"));
@@ -71,11 +70,11 @@ public class LoginServiceImpl implements LoginService {
         userSign.setCreateAt(LocalDate.now());
 
         userSign = usersRepository.save(userSign);
-        userRoles.setUserRoleId(userRoles.getUserRoleId());
+        userRoles.setUserId(userSign.getUserId());
         userRoles.setRoleCode(role.getRoleCode());
-        userRoleService.addRoleWithSignUp(userRoles);
+        userRolesRepository.save(userRoles);
 
-        apiResponse.setStatus(HttpStatus.OK);
+        apiResponse.setStatus(ResponseStatus.HTTP_STATUS_OK.getStatusCode());
         apiResponse.setResponseData(userSign);
 
         return apiResponse;
@@ -89,16 +88,16 @@ public class LoginServiceImpl implements LoginService {
         Users user = usersRepository.findByUsernameIgnoreCaseAndPassword(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
 
         if (user == null) {
-            apiResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            apiResponse.setStatus(HttpStatus.UNAUTHORIZED);
             apiResponse.setResponseData("User login failed");
             return apiResponse;
         }
 
-        String token = jwtUtils.generateJwt(user);
+        String token = JwtUtils.generateJwt(user);
         Map<String, Object> data = new HashMap<>();
         data.put("accessToken", token);
 
-        apiResponse.setStatus(HttpStatus.OK.value());
+        apiResponse.setStatus(ResponseStatus.HTTP_STATUS_OK.getStatusCode());
         apiResponse.setResponseData(data);
 
 

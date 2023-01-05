@@ -5,7 +5,6 @@ import com.learn.test.model.request.ItemRequestDTO;
 import com.learn.test.model.response.APIResponse;
 import com.learn.test.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +24,7 @@ public class ItemController {
         String result = "";
         if (item == null) {
             throw new Exception("Item Tidak Berhasil di tambahkan");
-        } else if (item != null){
+        } else if (item != null) {
             result = "Item berhasil ditambahkan";
             return result;
         }
@@ -38,27 +37,33 @@ public class ItemController {
         return list;
     }
 
-    @PutMapping("/edit/{itemCode}&={createBy}")
+    @GetMapping("/list-item/{userId}")
+    public List<Item> listItemByUserId(@PathVariable("userId") Long userId) {
+        List<Item> list = itemService.findAllItemByUser(userId);
+        return list;
+    }
+
+    @PutMapping("/edit/{itemCode}&={userId}")
     public ResponseEntity<APIResponse> editItem(@PathVariable("itemCode") String itemCode,
-                                                @PathVariable("createBy") Long createBy,
+                                                @PathVariable("userId") Long userId,
                                                 @RequestBody ItemRequestDTO itemRequestDTO) {
-        Item item = itemService.getItemById(itemCode, createBy);
+        Item item = itemService.getItemById(itemCode, userId);
         if (item == null) {
             return ResponseEntity.notFound().build();
         }
         APIResponse itemResponse = itemService.editItem(item, itemRequestDTO);
         return ResponseEntity
-                .status((HttpStatus) itemResponse.getStatus())
+                .status((int) itemResponse.getStatus())
                 .body(itemResponse);
     }
 
 
-    @DeleteMapping("/delete/{itemCode}&={deletedBy")
+    @DeleteMapping("/delete/{itemCode}&={deletedBy}")
     public ResponseEntity<APIResponse> deletedItem(@PathVariable("itemCode") String itemCode,
                                                    @PathVariable("deletedBy") Long deletedBy) {
         APIResponse item = itemService.deleteItemByItemCode(itemCode, deletedBy);
         return ResponseEntity
-                .status((HttpStatus) item.getStatus())
+                .status((int) item.getStatus())
                 .body(item);
     }
 

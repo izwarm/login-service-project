@@ -19,4 +19,6 @@ public class Transaction implements Serializable {
 
     private BigDecimal totalPrice;
 
+    private Long userId;
+
 }

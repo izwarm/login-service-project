@@ -20,4 +20,6 @@ public interface ItemService {
     APIResponse deleteItemByItemCode(String itemCode, Long deletedBy);
 
     Item getItemByItemCode(String itemCode);
+
+    List<Item> findAllItemByUser(Long userId);
 }
